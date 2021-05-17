@@ -1,0 +1,73 @@
+= Keycloak CLI Client Example
+
+This repo contains an example of using the https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-00#section-4.1[Authorization Code Grant]
+in a CLI application using https://www.keycloak.org/downloads[Keycloak.x].
+
+The CLI application has been written in Go, but the overall principle remains the same for other languages and frameworks.
+
+== Starting Keycloak.x
+
+https://www.keycloak.org/2020/12/first-keycloak-x-release.adoc[Keycloak.x] is a new Keycloak distribution that has been built on top of Quarkus.
+Among many other features, it has so-called Developer Mode, which enables you to run it without doing much configuration.
+But remember - this mode shall not be used in production (or even staging). It's purely a development thing:
+
+.Starting Keycloak.x
+----
+$ cd $KC/bin
+$ ./kc.sh start-dev
+...
+2021-05-17 09:24:43,610 INFO  [io.quarkus] (main) Profile dev activated.
+2021-05-17 09:24:43,610 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-h2, jdbc-mariadb, jdbc-mysql, jdbc-postgresql, keycloak, mutiny, narayana-jta, resteasy, resteasy-jackson, smallrye-context-propagation, smallrye-health, smallrye-metrics, vertx, vertx-web]
+----
+
+Keycloak.x is now ready to serve the requests. You can log into the Admin Console using `admin/admin` credentials:
+
+image::keycloak-cli-client-example/img/keycloak-admin.png[]
+
+== Create a CLI Client
+
+The next step is to create a public CLI Client that will be used by the CLI application. The configuration is the following:
+
+image::keycloak-cli-client-example/img/cli-client.png[]
+
+Here are some highlights:
+
+- The Access Type is set to "public" as we won't be using any Client Credentials. Later on, we'll be enhancing this scenario.
+- We specify a valid Redirect URL. Note, it's HTTP without TLS. That's fine as we're connecting to the localhost so nothing leaves our local box.
+
+== Run the CLI application
+
+Now use your favorite IDE or `go` command line to run the CLI application. You will be asked to provide username and password:
+
+image::keycloak-cli-client-example/img/login.png[]
+
+You can use `admin/admin` as we're using the Master Realm.
+
+After logging in, you will see the following web page:
+
+image::keycloak-cli-client-example/img/close-the-window.png[]
+
+Now, look at your terminal window to find the Access Token.
+
+== So what really happened?
+
+The CLI application starts an embedded HTTP server up on port 8081 with "/sso-callback" path. Now, let's quickly check,
+how the https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-00#section-4.1[Authorization Code Flow] looks like:
+
+image::keycloak-cli-client-example/img/authorization-code-flow.png[]
+
+The embedded HTTP Server is used in Step no. 4 to obtain the Authorization Code. If the code is detected, it's being
+exchanged for an Access Token.
+
+== Ok, ok... so how to use it in production?
+
+Of course, the example in this repo should not be used in production. It has been simplified to illustrate the main
+principles for constructing CLI applications for oAuth flows. In order to use this in production, you need to consider
+at least the following:
+
+- Perhaps the client should use Client Authentication mechanism?
+- The embedded HTTP server handler should probably use an oAuth library that contain a much more mature (and better) code
+for exchanging the code for tokens.
+- You should probably capture a Refresh Token as well. If you're using OpenID Connect, you may also want an ID Token.
+- Use TLS.
+- Use a well configured Keycloak instance!
