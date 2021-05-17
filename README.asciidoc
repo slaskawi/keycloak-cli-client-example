@@ -22,13 +22,13 @@ $ ./kc.sh start-dev
 
 Keycloak.x is now ready to serve the requests. You can log into the Admin Console using `admin/admin` credentials:
 
-image::keycloak-cli-client-example/img/keycloak-admin.png[]
+image::img/keycloak-admin.png[]
 
 == Create a CLI Client
 
 The next step is to create a public CLI Client that will be used by the CLI application. The configuration is the following:
 
-image::keycloak-cli-client-example/img/cli-client.png[]
+image::img/cli-client.png[]
 
 Here are some highlights:
 
@@ -39,13 +39,13 @@ Here are some highlights:
 
 Now use your favorite IDE or `go` command line to run the CLI application. You will be asked to provide username and password:
 
-image::keycloak-cli-client-example/img/login.png[]
+image::img/login.png[]
 
 You can use `admin/admin` as we're using the Master Realm.
 
 After logging in, you will see the following web page:
 
-image::keycloak-cli-client-example/img/close-the-window.png[]
+image::img/close-the-window.png[]
 
 Now, look at your terminal window to find the Access Token.
 
@@ -54,7 +54,7 @@ Now, look at your terminal window to find the Access Token.
 The CLI application starts an embedded HTTP server up on port 8081 with "/sso-callback" path. Now, let's quickly check,
 how the https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-00#section-4.1[Authorization Code Flow] looks like:
 
-image::keycloak-cli-client-example/img/authorization-code-flow.png[]
+image::img/authorization-code-flow.png[]
 
 The embedded HTTP Server is used in Step no. 4 to obtain the Authorization Code. If the code is detected, it's being
 exchanged for an Access Token.
