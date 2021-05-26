@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func BuildLoginRequest(config Config) string {
+func BuildAuthorizationRequest(config Config) string {
 	return fmt.Sprintf("%v/realms/%v/protocol/openid-connect/auth?client_id=%v&redirect_uri=%v&response_type=code", config.KeycloakConfig.KeycloakURL, config.KeycloakConfig.Realm, config.KeycloakConfig.ClientID, config.EmbeddedServerConfig.GetCallbackURL())
 }
 

@@ -20,9 +20,9 @@ func main() {
 	}
 
 	cli.StartServer(config)
-	err := cli.OpenBrowser(cli.BuildLoginRequest(config))
+	err := cli.OpenBrowser(cli.BuildAuthorizationRequest(config))
 	if err != nil {
-		log.Fatalf("Could not open the browser for url %v", cli.BuildLoginRequest(config))
+		log.Fatalf("Could not open the browser for url %v", cli.BuildAuthorizationRequest(config))
 	}
 
 	cli.CloseApp.Wait()
